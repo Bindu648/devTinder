@@ -1,19 +1,22 @@
 {
   "name": "devtinder",
   "version": "1.0.0",
-  "description": "Devtinder is my first nodejs project.",
+  "description": "",
   "main": "index.js",
   "scripts": {
     "start":"node src/app.js",
     "dev":"nodemon src/app.js"
   },
-  "keywords": [
-    "nodejs",
-    "javascript",
-    "react"
-  ],
-  "author": "Bindupriya Samanthula",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Bindu648/devTinder.git"
+  },
+  "author": "",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Bindu648/devTinder/issues"
+  },
+  "homepage": "https://github.com/Bindu648/devTinder#readme",
   "dependencies": {
     "express": "^4.21.2"
   }
