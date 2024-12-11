@@ -1,22 +1,22 @@
 const express = require("express");
 
 const app = express();
+app.use("/",(err,req,res,next)=>{
+    if(err){
+        res.status(500).send("something went wrong");
 
-app.get("/user",[(req,res,next)=>{
-    console.log("handling the route user");
-    next();
-    res.send("1st response");
-   
-},(req,res,next)=>{
-    console.log("handling the route user2");
-    res.send("2nd response");
-    next();
-}],(req,res,next)=>{
-    console.log("handling the route user3");
-    res.send("3nd response");
-    next();
+    }
 });
+app.get("/getUserData",(req,res)=>{
+    throw new Error("hsdhjhsd");
+    req.send("user data sent");
+});
+app.use("/",(err,req,res,next)=>{
+    if(err){
+        res.status(500).send("something went wrong");
 
+    }
+});
 
 
 app.listen(3000,()=>{
