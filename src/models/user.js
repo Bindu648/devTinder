@@ -1,24 +1,49 @@
 const { default: mongoose } = require("mongoose");
 const userschema=mongoose.Schema({
     firstName:{
-        type:String
+        type:String,
+        required:true,
+        minLength:4,
+        maxLength:20,
     },
     lastName:{
-        type:String
+        type:String,
     },
     emailId:{
-        type:String
-},
+        type:String,
+        lowercase:true,
+        unique:true,
+        required:true,
+        trim:true,
+        
+    },
     password:{
-        type:String
+        type:String,
     },
     age:{
-        type:Number
+        type:Number,
+        min:18,
     },
     gender:{
-        type:String
-    }
-});
+        type:String,
+        validate(value){
+            if(!["male","female","others"].includes(value)){
+                throw new Error("gender data is not valid");
+            }
+        }
+    },
+    photoUrl:{
+        type:String,
+        default:"https://statinfer.com/wp-content/uploads/dummy-user.png",
+    },
+    about:{
+        type:String,
+        default:"This ia a default about the user",
+    },
+    skills:{
+        type:[String],
+    },
+},{timestamps:true});
 
 
 module.exports=mongoose.model("User",userschema);
