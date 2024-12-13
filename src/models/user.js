@@ -42,6 +42,7 @@ const userschema=mongoose.Schema({
     },
     skills:{
         type:[String],
+       
     },
 },{timestamps:true});
 
