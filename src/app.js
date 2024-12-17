@@ -1,80 +1,21 @@
 const express = require("express");
 const connectDB=require("./config/database");
 const app = express();
-const User=require("./models/user");
+
+const cookieparser=require("cookie-parser");
+const jwt=require("jsonwebtoken");
+
 app.use(express.json());
+app.use(cookieparser());
 
-app.post("/signup",async(req,res)=>{
-    //creating a new instance of the User model
-    const user=new User(req.body);
-    try{
-        await user.save();
-        res.send("user added successfully");
-    }catch(err){
-        {
-        res.status(400).send("error saving the user:"+err.message);
-    }
-}
-    
-});
 
-//feed api-get /feed - get all the users from the databases
-app.get("/feed",async(req,res)=>{
-    try{
-        const users = await User.find({});
-        res.send(users);
-    }catch(err){
-        res.status(400).send("something went wwrong");
-    }
-})
+const authRouter=require("./routes/auth");
+const profileRouter=require("./routes/profile");
+const requestRouter=require("./routes/requests");
+app.use("/", authRouter);
+app.use("/", profileRouter);
+app.use("/", requestRouter);
 
-//get user by email
-app.get("/user",async(req,res)=>{
-    const userEmail=req.body.emailId;
-    try{
-        console.log(userEmail);
-        const user=await User.find({emailId:userEmail});
-        res.send(user);
-    }catch(err){
-        res.status(400).send("something went wrong");
-    }
-});
-
-// delete a user ffrom the database
-app.delete("/user",async(req,res)=>{
-    const userId=req.body.userId;
-    try{
-        const user=await User.findByIdAndDelete(userId);
-        res.send("user deleted successfully");
-    }catch(err){
-        res.status(400).send("something went wrong");
-    }
-});
-
-// update data of the user
-app.patch("/user",async(req,res)=>{
-    const userId=req.body.userId;
-    const data=req.body;
-    try{
-        const ALLOWED_UPDATES=["photourl","age","gender","userId","skills","about"];
-        const isUpdateAllowed=Object.keys(data).every((k)=>
-            ALLOWED_UPDATES.includes(k)
-        );
-        if(!isUpdateAllowed){
-            throw new Error("Updates not allowed");
-        }
-        if(data.skills.length >10){
-            throw new Error("skills cannot be more than 10");
-        }
-       const user= await User.findByIdAndUpdate(userId,data,{
-        runValidators:true,
-       });
-       
-        res.send("user updates successfully");
-    }catch(err){
-        res.status(400).send("update failed:"+ err.message);
-    }
-});
 connectDB().then(()=>{
     console.log("database connection established");
     app.listen(3000,()=>{

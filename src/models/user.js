@@ -1,4 +1,7 @@
 const { default: mongoose } = require("mongoose");
+const validator=require("validator");
+const bcrypt=require("bcrypt");
+const jwt=require("jsonwebtoken");
 const userschema=mongoose.Schema({
     firstName:{
         type:String,
@@ -15,10 +18,20 @@ const userschema=mongoose.Schema({
         unique:true,
         required:true,
         trim:true,
+        validate(value){
+            if(!validator.isEmail(value)){
+                throw new Error("invalid email address : " + value);
+            }
+        }
         
-    },
-    password:{
+    
+    },password:{
         type:String,
+        validate(value){
+            if(!validator.isStrongPassword(value)){
+                throw new Error("wrong password : " +value);
+            }
+        }
     },
     age:{
         type:Number,
@@ -35,6 +48,11 @@ const userschema=mongoose.Schema({
     photoUrl:{
         type:String,
         default:"https://statinfer.com/wp-content/uploads/dummy-user.png",
+        validate(value){
+            if(!validator.isURL(value)){
+                throw new Error("invalid url : " + value);
+            }
+        }
     },
     about:{
         type:String,
@@ -45,6 +63,17 @@ const userschema=mongoose.Schema({
        
     },
 },{timestamps:true});
+userschema.methods.getJWT=async function(){
+    const user=this;
+    const token=await jwt.sign({_id:user._id},"Dev@Tinder024",{expiresIn:'7d'});
+    return token;
+};
+userschema.methods.validatePassword=async function(passwordInputByUser){
+    const user=this;
+    const passwordHash=user.password;
+    const isPasswordValid=await bcrypt.compare(passwordInputByUser,passwordHash);
+    return isPasswordValid;
+}
 
 
 module.exports=mongoose.model("User",userschema);
