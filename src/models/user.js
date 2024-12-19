@@ -25,7 +25,8 @@ const userschema=mongoose.Schema({
         }
         
     
-    },password:{
+    },
+    password:{
         type:String,
         validate(value){
             if(!validator.isStrongPassword(value)){
@@ -39,11 +40,15 @@ const userschema=mongoose.Schema({
     },
     gender:{
         type:String,
-        validate(value){
-            if(!["male","female","others"].includes(value)){
-                throw new Error("gender data is not valid");
-            }
+        enum:{
+            values:["male","female","other"],
+            message:`{VALUE} is not a valid gender type`,
         }
+        //validate(value){
+            //if(!["male","female","others"].includes(value)){
+                //throw new Error("gender data is not valid");
+            //}
+        //}
     },
     photoUrl:{
         type:String,
